@@ -6,13 +6,8 @@ import { BrowserModule } from "@angular/platform-browser";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { CommunicationService } from "./communication.service";
-import { BirdSpecies } from "./bird-species/bird-species.component";
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    BirdSpecies,
-  ],
   imports: [
     CommonModule,
     BrowserModule,

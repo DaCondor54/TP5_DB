@@ -1,25 +1,74 @@
-import { Location } from "@angular/common";
-import { Component, OnInit } from "@angular/core";
-import { Router } from "@angular/router";
+import { Component, ElementRef, ViewChild } from "@angular/core";
+import { Hotel } from "../../../common/tables/Hotel";
+import { CommunicationService } from "./communication.service";
 
 @Component({
   selector: "app-root",
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.css"],
 })
-export class AppComponent implements OnInit {
-    public route: string;
+export class AppComponent {
+  @ViewChild("newHotelNb") newHotelNb: ElementRef;
+  @ViewChild("newHotelName") newHotelName: ElementRef;
+  @ViewChild("newHotelCity") newHotelCity: ElementRef;
 
-    public constructor(location: Location, router: Router) {
-        router.events.subscribe((val) => {
-            if (location.path() !== "") {
-              this.route = location.path();
-            } else {
-              this.route = "";
-            }
-          });
-    }
+  public hotels: Hotel[] = [];
+  public duplicateError: boolean = false;
 
-    public readonly title: string = "INF3710 TP4";
-    public ngOnInit(): void { }
+  public constructor(private communicationService: CommunicationService) {}
+
+  public ngOnInit(): void {
+    this.getHotels();
+  }
+
+  public getHotels(): void {
+    this.communicationService.getHotels().subscribe((hotels: Hotel[]) => {
+      this.hotels = hotels;
+    });
+  }
+
+  public insertHotel(): void {
+    const hotel: any = {
+      hotelnb: this.newHotelNb.nativeElement.innerText,
+      name: this.newHotelName.nativeElement.innerText,
+      city: this.newHotelCity.nativeElement.innerText,
+    };
+
+    this.communicationService.insertHotel(hotel).subscribe((res: number) => {
+      if (res > 0) {
+        this.communicationService.filter("update");
+      }
+      this.refresh();
+      this.duplicateError = res === -1;
+    });
+  }
+
+  private refresh() {
+    this.getHotels();
+    this.newHotelNb.nativeElement.innerText = "";
+    this.newHotelName.nativeElement.innerText = "";
+    this.newHotelCity.nativeElement.innerText = "";
+  }
+
+  public deleteHotel(hotelNb: string) {
+    this.communicationService.deleteHotel(hotelNb).subscribe((res: any) => {
+      this.refresh();
+    });
+  }
+
+  public changeHotelName(event: any, i:number){
+    const editField = event.target.textContent;
+    this.hotels[i].name = editField;
+  }
+
+  public changeHotelCity(event: any, i:number){
+    const editField = event.target.textContent;
+    this.hotels[i].city = editField;
+  }
+
+  public updateHotel(i: number) {
+    this.communicationService.updateHotel(this.hotels[i]).subscribe((res: any) => {
+      this.refresh();
+    });
+  }
 }
