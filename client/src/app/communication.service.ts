@@ -1,6 +1,5 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-// tslint:disable-next-line:ordered-imports
 import { of, Observable, Subject } from "rxjs";
 import { catchError } from "rxjs/operators";
 import { BirdSpecies } from "../../../common/tables/BirdSpecies";
@@ -10,46 +9,39 @@ export class CommunicationService {
   private readonly BASE_URL: string = "http://localhost:3000/database";
   public constructor(private http: HttpClient) {}
 
-  private _listners: any = new Subject<any>();
+  private listeners$: Subject<string> = new Subject<string>();
 
-  public listen(): Observable<any> {
-    return this._listners.asObservable();
+  public listen(): Observable<string> {
+    return this.listeners$.asObservable();
   }
 
   public filter(filterBy: string): void {
-    this._listners.next(filterBy);
+    this.listeners$.next(filterBy);
   }
 
-  public getHotels(): Observable<BirdSpecies[]> {
+  public getBirds(): Observable<BirdSpecies[]> {
     return this.http
-      .get<BirdSpecies[]>(this.BASE_URL + "/hotels")
-      .pipe(catchError(this.handleError<BirdSpecies[]>("getHotels")));
+      .get<BirdSpecies[]>(this.BASE_URL + "/birds")
+      .pipe(catchError(this.handleError<BirdSpecies[]>("getBirds")));
   }
 
-  public insertHotel(hotel: BirdSpecies): Observable<number> {
+  public insertBird(hotel: BirdSpecies): Observable<number> {
     return this.http
-      .post<number>(this.BASE_URL + "/hotels/insert", hotel)
-      .pipe(catchError(this.handleError<number>("insertHotel")));
+      .post<number>(this.BASE_URL + "/birds", hotel)
+      .pipe(catchError(this.handleError<number>("insertBird")));
   }
 
-  public updateHotel(hotel: BirdSpecies): Observable<number> {
+  public updateBird(hotel: BirdSpecies): Observable<number> {
     return this.http
-      .put<number>(this.BASE_URL + "/hotels/update", hotel)
-      .pipe(catchError(this.handleError<number>("updateHotel")));
+      .put<number>(this.BASE_URL + "/birds", hotel)
+      .pipe(catchError(this.handleError<number>("updateBird")));
   }
 
-  public deleteHotel(hotelNb: string): Observable<number> {
+  public deleteBird(hotelNb: string): Observable<number> {
     return this.http
-      .post<number>(this.BASE_URL + "/hotels/delete/" + hotelNb, {})
-      .pipe(catchError(this.handleError<number>("deleteHotel")));
+      .post<number>(this.BASE_URL + "/birds" + hotelNb, {})
+      .pipe(catchError(this.handleError<number>("deleteBird")));
   }
-
-  // public getHotelPKs(): Observable<HotelPK[]> {
-  //   return this.http
-  //     .get<HotelPK[]>(this.BASE_URL + "/hotels/hotelNb")
-  //     .pipe(catchError(this.handleError<HotelPK[]>("getHotelPKs")));
-  // }
-
 
   private handleError<T>(
     request: string,

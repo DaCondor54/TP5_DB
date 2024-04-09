@@ -1,5 +1,5 @@
 import { Component, ElementRef, ViewChild } from "@angular/core";
-import { Hotel } from "../../../common/tables/Hotel";
+import { BirdSpecies, SpeciesStatus } from "../../../common/tables/BirdSpecies";
 import { CommunicationService } from "./communication.service";
 
 @Component({
@@ -8,33 +8,35 @@ import { CommunicationService } from "./communication.service";
   styleUrls: ["./app.component.css"],
 })
 export class AppComponent {
-  @ViewChild("newHotelNb") newHotelNb: ElementRef;
-  @ViewChild("newHotelName") newHotelName: ElementRef;
-  @ViewChild("newHotelCity") newHotelCity: ElementRef;
+  @ViewChild("newScientificName") newScientificName: ElementRef;
+  @ViewChild("newCommonName") newCommonName: ElementRef;
+  @ViewChild("newSpeciesStatus") newSpeciesStatus: ElementRef;
+  @ViewChild("newScientificNameConsumed") newScientificNameConsumed: ElementRef;
 
-  public hotels: Hotel[] = [];
+  public birds: BirdSpecies[] = [];
   public duplicateError: boolean = false;
 
   public constructor(private communicationService: CommunicationService) {}
 
   public ngOnInit(): void {
-    this.getHotels();
+    this.getBirds();
   }
 
-  public getHotels(): void {
-    this.communicationService.getHotels().subscribe((hotels: Hotel[]) => {
-      this.hotels = hotels;
+  public getBirds(): void {
+    this.communicationService.getBirds().subscribe((hotels: BirdSpecies[]) => {
+      this.birds = hotels;
     });
   }
 
-  public insertHotel(): void {
-    const hotel: any = {
-      hotelnb: this.newHotelNb.nativeElement.innerText,
-      name: this.newHotelName.nativeElement.innerText,
-      city: this.newHotelCity.nativeElement.innerText,
+  public insertBird(): void {
+    const hotel: BirdSpecies = {
+      scientificName: this.newScientificName.nativeElement.innerText,
+      commonName: this.newCommonName.nativeElement.innerText,
+      speciesStatus: this.newSpeciesStatus.nativeElement.innerText,
+      scientificNameConsumed: this.newScientificNameConsumed.nativeElement.innerText
     };
 
-    this.communicationService.insertHotel(hotel).subscribe((res: number) => {
+    this.communicationService.insertBird(hotel).subscribe((res: number) => {
       if (res > 0) {
         this.communicationService.filter("update");
       }
@@ -44,30 +46,40 @@ export class AppComponent {
   }
 
   private refresh() {
-    this.getHotels();
-    this.newHotelNb.nativeElement.innerText = "";
-    this.newHotelName.nativeElement.innerText = "";
-    this.newHotelCity.nativeElement.innerText = "";
+    this.getBirds();
+    this.newScientificName.nativeElement.innerText = "";
+    this.newCommonName.nativeElement.innerText = "";
+    this.newSpeciesStatus.nativeElement.innerText = "";
+    this.newScientificNameConsumed.nativeElement.innerText = "";
   }
 
-  public deleteHotel(hotelNb: string) {
-    this.communicationService.deleteHotel(hotelNb).subscribe((res: any) => {
+  public deleteBird(hotelNb: string) {
+    this.communicationService.deleteBird(hotelNb).subscribe((res: number) => {
       this.refresh();
     });
   }
 
-  public changeHotelName(event: any, i:number){
+  public changeBirdCommonName(event: any, i:number){
     const editField = event.target.textContent;
-    this.hotels[i].name = editField;
+    this.birds[i].commonName = editField;
   }
 
-  public changeHotelCity(event: any, i:number){
-    const editField = event.target.textContent;
-    this.hotels[i].city = editField;
+  public changeSpeciesStatus(event: Event, i:number){
+    const cell = event.target as HTMLTableCellElement;
+    console.log(cell.textContent)
+    // const editField = cell.textContent ?? 'Vulnérable';
+    this.birds[i].speciesStatus = SpeciesStatus.Vulnerable;
   }
 
-  public updateHotel(i: number) {
-    this.communicationService.updateHotel(this.hotels[i]).subscribe((res: any) => {
+  public changeConsumed(event: Event, i:number){
+    const cell = event.target as HTMLTableCellElement;
+    console.log(cell.textContent)
+    // const editField = cell.textContent ?? 'Vulnérable';
+    this.birds[i].speciesStatus = SpeciesStatus.Vulnerable;
+  }
+
+  public updateBird(i: number) {
+    this.communicationService.updateBird(this.birds[i]).subscribe((res: number) => {
       this.refresh();
     });
   }
