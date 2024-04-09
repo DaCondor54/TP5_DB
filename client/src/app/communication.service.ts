@@ -21,25 +21,25 @@ export class CommunicationService {
 
   public getBirds(): Observable<BirdSpecies[]> {
     return this.http
-      .get<BirdSpecies[]>(this.BASE_URL + "/birds")
+      .get<BirdSpecies[]>(this.BASE_URL + "/birdSpecies")
       .pipe(catchError(this.handleError<BirdSpecies[]>("getBirds")));
   }
 
-  public insertBird(hotel: BirdSpecies): Observable<number> {
+  public insertBird(bird: BirdSpecies): Observable<number> {
     return this.http
-      .post<number>(this.BASE_URL + "/birds", hotel)
+      .post<number>(this.BASE_URL + "/birdSpecies", bird)
       .pipe(catchError(this.handleError<number>("insertBird")));
   }
 
-  public updateBird(hotel: BirdSpecies): Observable<number> {
+  public updateBird(bird: BirdSpecies): Observable<number> {
     return this.http
-      .put<number>(this.BASE_URL + "/birds", hotel)
+      .put<number>(this.BASE_URL + "/birdSpecies", bird)
       .pipe(catchError(this.handleError<number>("updateBird")));
   }
 
-  public deleteBird(hotelNb: string): Observable<number> {
+  public deleteBird(scientificName: string): Observable<number> {
     return this.http
-      .post<number>(this.BASE_URL + "/birds" + hotelNb, {})
+      .post<number>(this.BASE_URL + "/birdSpecies/" + scientificName, {})
       .pipe(catchError(this.handleError<number>("deleteBird")));
   }
 

@@ -2,6 +2,7 @@ import { injectable } from "inversify";
 import * as pg from "pg";
 import "reflect-metadata";
 import { BirdSpecies } from "../../../common/tables/BirdSpecies";
+import { query } from "express";
 
 const BIRD_SPECIES_DB_PATH = 'ornithologue_bd.especeoiseau';
 
@@ -33,7 +34,7 @@ export class DatabaseService {
       throw new Error("Invalid create bird species values");
 
     const values: string[] = [scientificName, commonName, speciesStatus, scientificNameConsumed];
-    const queryText: string = `INSERT INTO ${BIRD_SPECIES_DB_PATH} VALUES($1, $2, $3);`;
+    const queryText: string = `INSERT INTO ${BIRD_SPECIES_DB_PATH} VALUES($1, $2, $3, $4);`;
 
     const res = await client.query(queryText, values);
     client.release();
@@ -58,9 +59,10 @@ export class DatabaseService {
     if (searchTerms.length > 0)
       queryText += " WHERE " + searchTerms.join(" AND ");
     queryText += ";";
-
+    console.log(queryText);
     const res = await client.query(queryText);
     client.release();
+    console.log(res);
     return res;
   }
 
