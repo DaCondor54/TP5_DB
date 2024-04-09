@@ -1,13 +1,13 @@
 import { Component, ElementRef, ViewChild } from "@angular/core";
 import { Hotel } from "../../../../common/tables/Hotel";
-import { CommunicationService } from "./../communication.service";
+import { CommunicationService } from "../communication.service";
 
 @Component({
-  selector: "app-hotel",
-  templateUrl: "./hotel.component.html",
-  styleUrls: ["./hotel.component.css"],
+  selector: "app-bird-species",
+  templateUrl: "./bird-species.component.html",
+  styleUrls: ["./bird-species.component.css"],
 })
-export class HotelComponent {
+export class BirdSpecies {
   @ViewChild("newHotelNb") newHotelNb: ElementRef;
   @ViewChild("newHotelName") newHotelName: ElementRef;
   @ViewChild("newHotelCity") newHotelCity: ElementRef;

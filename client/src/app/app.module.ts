@@ -6,16 +6,12 @@ import { BrowserModule } from "@angular/platform-browser";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { CommunicationService } from "./communication.service";
-import { GuestComponent } from "./guest/guest.component";
-import { HotelComponent } from "./hotel/hotel.component";
-import { RoomComponent } from "./room/room.component";
+import { BirdSpecies } from "./bird-species/bird-species.component";
 
 @NgModule({
   declarations: [
     AppComponent,
-    RoomComponent,
-    HotelComponent,
-    GuestComponent,
+    BirdSpecies,
   ],
   imports: [
     CommonModule,
