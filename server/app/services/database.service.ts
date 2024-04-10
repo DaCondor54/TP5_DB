@@ -2,7 +2,6 @@ import { injectable } from "inversify";
 import * as pg from "pg";
 import "reflect-metadata";
 import { BirdSpecies } from "../../../common/tables/BirdSpecies";
-import { query } from "express";
 
 const BIRD_SPECIES_DB_PATH = 'ornithologue_bd.especeoiseau';
 
@@ -10,8 +9,8 @@ const BIRD_SPECIES_DB_PATH = 'ornithologue_bd.especeoiseau';
 export class DatabaseService {
   public connectionConfig: pg.ConnectionConfig = {
     user: "student",
-    database: "student",
-    password: "polymtl150$",
+    database: "ornithologue_bd",
+    password: "1234",
     port: 5432,
     host: "127.0.0.1",
     keepAlive: true,
@@ -21,7 +20,7 @@ export class DatabaseService {
 
   public async getAllFromTable(tableName: string): Promise<pg.QueryResult> {
     const client = await this.pool.connect();
-    const res = await client.query(`SELECT * FROM ornithologue_bd.${tableName};`);
+    const res = await client.query(`SELECT * FROM ${tableName} ORDER BY nomscientifique DESC;`);
     client.release();
     return res;
   }
@@ -58,6 +57,7 @@ export class DatabaseService {
     let queryText = `SELECT * FROM ${BIRD_SPECIES_DB_PATH}`;
     if (searchTerms.length > 0)
       queryText += " WHERE " + searchTerms.join(" AND ");
+    queryText += ` ORDER BY ${BIRD_SPECIES_DB_PATH}.nomscientifique ASC `;
     queryText += ";";
     console.log(queryText);
     const res = await client.query(queryText);
@@ -68,7 +68,7 @@ export class DatabaseService {
 
   public async getBirdSpeciesByScientificName(): Promise<pg.QueryResult> {
     const client = await this.pool.connect();
-    const res = await client.query(`SELECT nomscientifique FROM ${BIRD_SPECIES_DB_PATH};`);
+    const res = await client.query(`SELECT nomscientifique FROM ${BIRD_SPECIES_DB_PATH} ORDER BY nomscientifique DESC`);
     client.release();
     return res;
   }
@@ -80,7 +80,7 @@ export class DatabaseService {
     let toUpdateValues = [];
 
     if (commonName.length > 0) toUpdateValues.push(`nomcommun = '${commonName}'`);
-    if (speciesStatus.length > 0) toUpdateValues.push(`statutspece = '${speciesStatus}'`);
+    if (speciesStatus.length > 0) toUpdateValues.push(`statutspeces = '${speciesStatus}'`);
     if (scientificNameConsumed.length > 0) toUpdateValues.push(`nomscientifiquecomsommer = '${scientificNameConsumed}'`);
 
     if (

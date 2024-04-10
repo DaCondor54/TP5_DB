@@ -17,11 +17,11 @@ export class DatabaseController {
     const router: Router = Router();
 
     // ex http://localhost:3000/database/birdSpecies?nomscientifique=nom&nomcommun=nom&statut=nom&nomscientifiqueconsomme=nom
-    router.get("/birdSpecies", (req: Request, res: Response, _: NextFunction) => {
-      var scientificName = req.params.scientificName ? req.params.scientificName : "";
-      var commonName = req.params.commonName ? req.params.commonName : "";
-      var speciesStatus = req.params.speciesStatus ? req.params.speciesStatus : "";
-      var scientificNameConsumed = req.params.scientificNameConsumed ? req.params.scientificNameConsumed : "";
+    router.get("/birdspecies", (req: Request, res: Response, _: NextFunction) => {
+      const scientificName = req.params.scientificName ? req.params.scientificName : "";
+      const commonName = req.params.commonName ? req.params.commonName : "";
+      const speciesStatus = req.params.speciesStatus ? req.params.speciesStatus : "";
+      const scientificNameConsumed = req.params.scientificNameConsumed ? req.params.scientificNameConsumed : "";
 
       this.databaseService
         .filterBirdSpecies(scientificName, commonName, speciesStatus, scientificNameConsumed)
@@ -29,7 +29,7 @@ export class DatabaseController {
           const birds: BirdSpecies[] = result.rows.map((bird: BirdSpeciesSchema) => ({
             scientificName: bird.nomscientifique,
             commonName: bird.nomcommun, 
-            speciesStatus: bird.statutspece,
+            speciesStatus: bird.statutspeces,
             scientificNameConsumed: bird.nomscientifiquecomsommer,
           }));
           res.json(birds);
@@ -40,7 +40,7 @@ export class DatabaseController {
     });
 
     router.get(
-      "/birdSpecies/scientificName",
+      "/birdspecies/scientificName",
       (req: Request, res: Response, _: NextFunction) => {
         this.databaseService
           .getBirdSpeciesByScientificName()

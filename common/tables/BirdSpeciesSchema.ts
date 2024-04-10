@@ -3,6 +3,6 @@ import { SpeciesStatus } from "./BirdSpecies";
 export interface BirdSpeciesSchema {
     nomscientifique: string;
     nomcommun: string;
-    statutspece: SpeciesStatus;
+    statutspeces: SpeciesStatus;
     nomscientifiquecomsommer: string;
 }
