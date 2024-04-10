@@ -9,8 +9,8 @@ const BIRD_SPECIES_DB_PATH = 'ornithologue_bd.especeoiseau';
 export class DatabaseService {
   public connectionConfig: pg.ConnectionConfig = {
     user: "student",
-    database: "ornithologue_bd",
-    password: "1234",
+    database: "student",
+    password: "polymtl150$",
     port: 5432,
     host: "127.0.0.1",
     keepAlive: true,
@@ -59,10 +59,8 @@ export class DatabaseService {
       queryText += " WHERE " + searchTerms.join(" AND ");
     queryText += ` ORDER BY ${BIRD_SPECIES_DB_PATH}.nomscientifique ASC `;
     queryText += ";";
-    console.log(queryText);
     const res = await client.query(queryText);
     client.release();
-    console.log(res);
     return res;
   }
 
@@ -101,9 +99,14 @@ export class DatabaseService {
     if (scientificName.length === 0) throw new Error("Invalid delete query");
 
     const client = await this.pool.connect();
-    const query = `DELETE FROM ${BIRD_SPECIES_DB_PATH} WHERE nomscientifique = '${scientificName}';`;
+    let queries = `
+      UPDATE ${BIRD_SPECIES_DB_PATH} SET nomscientifiquecomsommer = null WHERE nomscientifiquecomsommer = '${scientificName}';
+      DELETE FROM ornithologue_bd.resider WHERE nomscientifique = '${scientificName}';
+      DELETE FROM ornithologue_bd.observation WHERE nomscientifique = '${scientificName}';
+      DELETE FROM ${BIRD_SPECIES_DB_PATH} CASCADE WHERE nomscientifique = '${scientificName}';
+    `;
+    const res = await client.query(queries);
 
-    const res = await client.query(query);
     client.release();
     return res;
   }

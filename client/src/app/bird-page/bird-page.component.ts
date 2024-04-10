@@ -26,7 +26,6 @@ export class BirdPageComponent {
 
   public getBirds(): void {
     this.communicationService.getBirds().subscribe((hotels: BirdSpecies[]) => {
-      console.log(hotels);
       this.birds = hotels;
     });
   }
