@@ -9,8 +9,8 @@ const BIRD_SPECIES_DB_PATH = 'ornithologue_bd.especeoiseau';
 export class DatabaseService {
   public connectionConfig: pg.ConnectionConfig = {
     user: "student",
-    database: "student",
-    password: "polymtl150$",
+    database: "ornithologue_bd",
+    password: "1234",
     port: 5432,
     host: "127.0.0.1",
     keepAlive: true,
@@ -28,11 +28,11 @@ export class DatabaseService {
   public async createBirdSpecies(bird: BirdSpecies): Promise<pg.QueryResult> {
     const client = await this.pool.connect();
     const { scientificName, commonName, speciesStatus, scientificNameConsumed } = bird;
-
+    console.log(bird);
     if (!scientificName)
       throw new Error("Invalid create bird species values");
-
-    const values: string[] = [scientificName, commonName, speciesStatus, scientificNameConsumed];
+    const consumed = scientificNameConsumed == '' ? null : scientificNameConsumed;
+    const values: (string | null)[] = [scientificName, commonName, speciesStatus, consumed];
     const queryText: string = `INSERT INTO ${BIRD_SPECIES_DB_PATH} VALUES($1, $2, $3, $4);`;
 
     const res = await client.query(queryText, values);
@@ -72,6 +72,7 @@ export class DatabaseService {
   }
 
   public async updateBirdSpecies(bird: BirdSpecies): Promise<pg.QueryResult> {
+    console.log(bird);
     const client = await this.pool.connect();
     const { scientificName, commonName, speciesStatus, scientificNameConsumed } = bird;
 
@@ -79,7 +80,11 @@ export class DatabaseService {
 
     if (commonName.length > 0) toUpdateValues.push(`nomcommun = '${commonName}'`);
     if (speciesStatus.length > 0) toUpdateValues.push(`statutspeces = '${speciesStatus}'`);
-    if (scientificNameConsumed.length > 0) toUpdateValues.push(`nomscientifiquecomsommer = '${scientificNameConsumed}'`);
+    if (scientificNameConsumed !== '') 
+      toUpdateValues.push(`nomscientifiquecomsommer = '${scientificNameConsumed}'`);
+    else
+      toUpdateValues.push(`nomscientifiquecomsommer = null`);
+
 
     if (
       !scientificName ||
