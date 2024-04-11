@@ -39,24 +39,6 @@ export class DatabaseController {
         });
     });
 
-    router.get(
-      "/birdspecies/scientificName",
-      (req: Request, res: Response, _: NextFunction) => {
-        this.databaseService
-          .getBirdSpeciesByScientificName()
-          .then((result: pg.QueryResult) => {
-            const scientificNames = result.rows.map((scientificName: string) => ({
-              scientificName: scientificName
-            }));
-            res.json(scientificNames);
-          })
-
-          .catch((e: Error) => {
-            console.error(e.stack);
-          });
-      }
-    );
-
     router.post(
       "/birdspecies",
       (req: Request, res: Response, _: NextFunction) => {
