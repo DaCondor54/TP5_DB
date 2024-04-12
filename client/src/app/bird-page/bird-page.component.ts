@@ -17,6 +17,8 @@ export class BirdPageComponent {
   public birds: BirdSpecies[] = [];
   public birdStatus: SpeciesStatus[] = [SpeciesStatus.Unthreatened, SpeciesStatus.MinorConcern, SpeciesStatus.Vulnerable]
   public duplicateError: boolean = false;
+  public errorMessage: string = '';
+  public showModal: boolean = false;
 
   public constructor(private communicationService: CommunicationService) {}
 
@@ -27,7 +29,6 @@ export class BirdPageComponent {
   public getBirds(): void {
     this.communicationService.getBirds().subscribe((birds: BirdSpecies[]) => {
       birds.forEach(bird => bird.scientificNameConsumed = bird.scientificNameConsumed ? bird.scientificNameConsumed : '' );
-      console.log(birds);
       this.birds = birds;
     });
   }
@@ -40,12 +41,18 @@ export class BirdPageComponent {
       scientificNameConsumed: this.newScientificNameConsumed.nativeElement.value
     };
 
-    this.communicationService.insertBird(bird).subscribe((res: number) => {
-      if (res > 0) {
-        this.communicationService.filter("update");
+    this.communicationService.insertBird(bird).subscribe({
+      next: (res: number) => {
+        if (res > 0) {
+          this.communicationService.filter("update");
+        }
+        this.refresh();
+        this.duplicateError = res === -1;
+      },
+      error: (error: Error) => {
+        this.errorMessage = error.message;
+        this.showModal = true;
       }
-      this.refresh();
-      this.duplicateError = res === -1;
     });
   }
 

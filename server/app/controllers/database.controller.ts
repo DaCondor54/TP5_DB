@@ -3,9 +3,9 @@ import { inject, injectable } from "inversify";
 import * as pg from "pg";
 import { BirdSpecies } from "../../../common/tables/BirdSpecies";
 import { BirdSpeciesSchema } from "../../../common/tables/BirdSpeciesSchema";
-
 import { DatabaseService } from "../services/database.service";
 import Types from "../types";
+import { ErrorMessage } from "../../../common/error-message";
 
 @injectable()
 export class DatabaseController {
@@ -42,11 +42,12 @@ export class DatabaseController {
     router.post(
       "/birdspecies",
       (req: Request, res: Response, _: NextFunction) => {
+        const { scientificName, commonName, speciesStatus, scientificNameConsumed } = req.body;
         const bird: BirdSpecies = {
-          scientificName: req.body.scientificName,
-          commonName: req.body.commonName,
-          speciesStatus: req.body.speciesStatus,
-          scientificNameConsumed: req.body.scientificNameConsumed,
+          scientificName,
+          commonName,
+          speciesStatus,
+          scientificNameConsumed,
         };
         this.databaseService
           .createBirdSpecies(bird)
@@ -55,7 +56,7 @@ export class DatabaseController {
           })
           .catch((e: Error) => {
             console.error(e.stack);
-            res.json(-1);
+            res.status(409).json({ message: scientificName === '' ? ErrorMessage.EmptyScientificName : ErrorMessage.DuplicateScientificName });
           });
       }
     );

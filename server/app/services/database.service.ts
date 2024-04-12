@@ -9,8 +9,8 @@ const BIRD_SPECIES_DB_PATH = 'ornithologue_bd.especeoiseau';
 export class DatabaseService {
   public connectionConfig: pg.ConnectionConfig = {
     user: "student",
-    database: "ornithologue_bd",
-    password: "1234",
+    database: "student",
+    password: "polymtl150$",
     port: 5432,
     host: "127.0.0.1",
     keepAlive: true,
@@ -28,7 +28,6 @@ export class DatabaseService {
   public async createBirdSpecies(bird: BirdSpecies): Promise<pg.QueryResult> {
     const client = await this.pool.connect();
     const { scientificName, commonName, speciesStatus, scientificNameConsumed } = bird;
-    console.log(bird);
     if (!scientificName)
       throw new Error("Invalid create bird species values");
     const consumed = scientificNameConsumed == '' ? null : scientificNameConsumed;
@@ -72,7 +71,6 @@ export class DatabaseService {
   }
 
   public async updateBirdSpecies(bird: BirdSpecies): Promise<pg.QueryResult> {
-    console.log(bird);
     const client = await this.pool.connect();
     const { scientificName, commonName, speciesStatus, scientificNameConsumed } = bird;
 

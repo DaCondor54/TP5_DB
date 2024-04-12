@@ -28,7 +28,9 @@ export class CommunicationService {
   public insertBird(bird: BirdSpecies): Observable<number> {
     return this.http
       .post<number>(this.BASE_URL + "/birdspecies", bird)
-      .pipe(catchError(this.handleError<number>("insertBird")));
+      .pipe(catchError((res) => {
+        throw new Error(res.error.message);
+      }));
   }
 
   public updateBird(bird: BirdSpecies): Observable<number> {

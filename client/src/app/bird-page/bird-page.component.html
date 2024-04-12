@@ -1,63 +1,99 @@
 <div id="birds">
-    <h1>Espèce d'Oiseau</h1>
+  <h1>Espèce d'Oiseau</h1>
 
-    <div class="divider"></div>
+  <div class="divider"></div>
 
-    <table id="ht" width="1000" style="margin:0 auto; border:1px solid black" class="table-striped table-hover">
-        <thead class="header">
-            <th class="contentCell">NOM SCIENTIFIQUE</th>
-            <th class="contentCell">NOM COMMUN</th>
-            <th class="contentCell">STATUS ESPÈCE</th>
-            <th class="contentCell">NOM SCIENTIFIQUE CONSOMMÉ</th>
-            <th class="actionCell">ACTION</th>
-        </thead>
-        <tbody>
-            <tr *ngFor="let bird of birds; let i = index; trackBy:trackByFunc">
-                <td class="contentCell">{{ bird.scientificName }}</td>
-                <td class="contentCell" contenteditable="true" (blur)="changeBirdCommonName($event, i)">
-                    {{ bird.commonName }}
-                </td>
-                <td class="contentCell">
-                    <select [(ngModel)]="birds[i].speciesStatus">
-                        <option *ngFor="let status of birdStatus" [value]="status"> {{status}}</option>
-                    </select>
-                </td>
-                <td class="contentCell">
-                    <select [(ngModel)]="birds[i].scientificNameConsumed" >
-                        <option *ngFor="let bird of birds" [value]="bird.scientificName"> {{bird.scientificName}}</option>
-                        <option value="">Aucun</option>
-                    </select>
-                </td>
-                <td class="actionCell">
-                    <button type="button" class="submitbtn" (click)="updateBird(i)">
-                        <i class="fa fa-edit"></i>
-                    </button>
-                    <button type="button" class="deletebtn" (click)="deleteBird(bird.scientificName)">
-                        <i class="fa fa-trash-o"></i>
-                    </button>
-                </td>
-            </tr>
+  <table
+    id="ht"
+    width="1000"
+    style="margin: 0 auto; border: 1px solid black"
+    class="table-striped table-hover"
+  >
+    <thead class="header">
+      <th class="contentCell">NOM SCIENTIFIQUE</th>
+      <th class="contentCell">NOM COMMUN</th>
+      <th class="contentCell">STATUT ESPÈCE</th>
+      <th class="contentCell">NOM SCIENTIFIQUE CONSOMMER</th>
+      <th class="actionCell">ACTION</th>
+    </thead>
+    <tbody>
+      <tr *ngFor="let bird of birds; let i = index; trackBy: trackByFunc">
+        <td class="contentCell">{{ bird.scientificName }}</td>
+        <td
+          class="contentCell"
+          contenteditable="true"
+          (blur)="changeBirdCommonName($event, i)"
+        >
+          {{ bird.commonName }}
+        </td>
+        <td class="contentCell">
+          <select [(ngModel)]="birds[i].speciesStatus">
+            <option *ngFor="let status of birdStatus" [value]="status">
+              {{ status }}
+            </option>
+          </select>
+        </td>
+        <td class="contentCell">
+          <select [(ngModel)]="birds[i].scientificNameConsumed">
+            <option *ngFor="let bird of birds" [value]="bird.scientificName">
+              {{ bird.scientificName }}
+            </option>
+            <option value="">Aucun</option>
+          </select>
+        </td>
+        <td class="actionCell">
+          <button type="button" class="submitbtn" (click)="updateBird(i)">
+            <i class="fa fa-edit"></i>
+          </button>
+          <button
+            type="button"
+            class="deletebtn"
+            (click)="deleteBird(bird.scientificName)"
+          >
+            <i class="fa fa-trash-o"></i>
+          </button>
+        </td>
+      </tr>
 
-            <tr class="blank_row">
-                <td class="contentCell" contenteditable="true" placeholder="New Scientific Name" #newScientificName>
-                </td>
-                <td class="contentCell" contenteditable="true" placeholder="New Common Name" #newCommonName></td>
-                <td class="contentCell">
-                    <select #newSpeciesStatus>
-                        <option *ngFor="let status of birdStatus" [value]="status"> {{status}}</option>
-                    </select>
-                </td>
-                <td class="contentCell">
+      <tr class="blank_row">
+        <td
+          class="contentCell"
+          contenteditable="true"
+          placeholder="Nom Scientifique"
+          #newScientificName
+        ></td>
+        <td
+          class="contentCell"
+          contenteditable="true"
+          placeholder="Nom Commun"
+          #newCommonName
+        ></td>
+        <td class="contentCell">
+          <select #newSpeciesStatus>
+            <option *ngFor="let status of birdStatus" [value]="status">
+              {{ status }}
+            </option>
+          </select>
+        </td>
+        <td class="contentCell">
+          <select #newScientificNameConsumed value="''">
+            <option *ngFor="let bird of birds" [value]="bird.scientificName">
+              {{ bird.scientificName }}
+            </option>
+            <option [value]="''">Aucun</option>
+          </select>
+        </td>
+        <td class="contentCell"></td>
+      </tr>
+    </tbody>
+  </table>
 
-                    <select #newScientificNameConsumed value="''">
-                        <option *ngFor="let bird of birds" [value]="bird.scientificName"> {{bird.scientificName}}</option>
-                        <option [value]="''">Aucun</option>
-                    </select>
-                </td>
-                <td class="contentCell"></td>
-            </tr>
-        </tbody>
-    </table>
+  <button type="button" class="btn" (click)="insertBird()">+</button>
 
-    <button type="button" class="btn" (click)="insertBird()">+</button>
+  <div *ngIf="showModal" class="my-modal">
+    <div class="modal-content">
+      <h4>{{ errorMessage }}</h4>
+      <button class="close" (click)="showModal = false">Fermer</button>
+    </div>
+  </div>
 </div>
