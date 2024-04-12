@@ -48,7 +48,6 @@ export class DatabaseController {
           speciesStatus: req.body.speciesStatus,
           scientificNameConsumed: req.body.scientificNameConsumed,
         };
-
         this.databaseService
           .createBirdSpecies(bird)
           .then((result: pg.QueryResult) => {

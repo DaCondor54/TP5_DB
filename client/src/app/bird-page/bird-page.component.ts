@@ -12,7 +12,7 @@ export class BirdPageComponent {
   @ViewChild("newScientificName") newScientificName: ElementRef;
   @ViewChild("newCommonName") newCommonName: ElementRef;
   @ViewChild("newSpeciesStatus") newSpeciesStatus: ElementRef;
-  @ViewChild("newScientificNameConsumed") newScientificNameConsumed: ElementRef;
+  @ViewChild("newScientificNameConsumed") newScientificNameConsumed: ElementRef<HTMLSelectElement>;
 
   public birds: BirdSpecies[] = [];
   public birdStatus: SpeciesStatus[] = [SpeciesStatus.Unthreatened, SpeciesStatus.MinorConcern, SpeciesStatus.Vulnerable]
@@ -25,20 +25,22 @@ export class BirdPageComponent {
   }
 
   public getBirds(): void {
-    this.communicationService.getBirds().subscribe((hotels: BirdSpecies[]) => {
-      this.birds = hotels;
+    this.communicationService.getBirds().subscribe((birds: BirdSpecies[]) => {
+      birds.forEach(bird => bird.scientificNameConsumed = bird.scientificNameConsumed ? bird.scientificNameConsumed : '' );
+      console.log(birds);
+      this.birds = birds;
     });
   }
 
   public insertBird(): void {
-    const hotel: BirdSpecies = {
+    const bird: BirdSpecies = {
       scientificName: this.newScientificName.nativeElement.innerText,
       commonName: this.newCommonName.nativeElement.innerText,
-      speciesStatus: this.newSpeciesStatus.nativeElement.innerText,
-      scientificNameConsumed: this.newScientificNameConsumed.nativeElement.innerText
+      speciesStatus: this.newSpeciesStatus.nativeElement.value,
+      scientificNameConsumed: this.newScientificNameConsumed.nativeElement.value
     };
 
-    this.communicationService.insertBird(hotel).subscribe((res: number) => {
+    this.communicationService.insertBird(bird).subscribe((res: number) => {
       if (res > 0) {
         this.communicationService.filter("update");
       }
@@ -51,8 +53,8 @@ export class BirdPageComponent {
     this.getBirds();
     this.newScientificName.nativeElement.innerText = "";
     this.newCommonName.nativeElement.innerText = "";
-    this.newSpeciesStatus.nativeElement.innerText = "";
-    this.newScientificNameConsumed.nativeElement.innerText = "";
+    this.newSpeciesStatus.nativeElement.value = SpeciesStatus.Unthreatened;
+    this.newScientificNameConsumed.nativeElement.value = '';
   }
 
   public deleteBird(hotelNb: string) {
@@ -64,20 +66,6 @@ export class BirdPageComponent {
   public changeBirdCommonName(event: any, i:number){
     const editField = event.target.textContent;
     this.birds[i].commonName = editField;
-  }
-
-  public changeSpeciesStatus(event: Event, i:number){
-    const cell = event.target as HTMLTableCellElement;
-    console.log(cell.textContent)
-    // const editField = cell.textContent ?? 'Vulnérable';
-    this.birds[i].speciesStatus = SpeciesStatus.Vulnerable;
-  }
-
-  public changeConsumed(event: Event, i:number){
-    const cell = event.target as HTMLTableCellElement;
-    console.log(cell.textContent)
-    // const editField = cell.textContent ?? 'Vulnérable';
-    this.birds[i].speciesStatus = SpeciesStatus.Vulnerable;
   }
 
   public updateBird(i: number) {

@@ -22,8 +22,11 @@
                         <option *ngFor="let status of birdStatus" [value]="status"> {{status}}</option>
                     </select>
                 </td>
-                <td class="contentCell" contenteditable="true" (blur)="changeConsumed($event, i)">
-                    {{ bird.scientificNameConsumed }}
+                <td class="contentCell">
+                    <select [(ngModel)]="birds[i].scientificNameConsumed" >
+                        <option *ngFor="let bird of birds" [value]="bird.scientificName"> {{bird.scientificName}}</option>
+                        <option value="">Aucun</option>
+                    </select>
                 </td>
                 <td class="actionCell">
                     <button type="button" class="submitbtn" (click)="updateBird(i)">
@@ -39,9 +42,18 @@
                 <td class="contentCell" contenteditable="true" placeholder="New Scientific Name" #newScientificName>
                 </td>
                 <td class="contentCell" contenteditable="true" placeholder="New Common Name" #newCommonName></td>
-                <td class="contentCell" contenteditable="true" placeholder="New Species Status" #newSpeciesStatus></td>
-                <td class="contentCell" contenteditable="true" placeholder="New Scientific Name Consumed"
-                    #newScientificNameConsumed></td>
+                <td class="contentCell">
+                    <select #newSpeciesStatus>
+                        <option *ngFor="let status of birdStatus" [value]="status"> {{status}}</option>
+                    </select>
+                </td>
+                <td class="contentCell">
+
+                    <select #newScientificNameConsumed value="''">
+                        <option *ngFor="let bird of birds" [value]="bird.scientificName"> {{bird.scientificName}}</option>
+                        <option [value]="''">Aucun</option>
+                    </select>
+                </td>
                 <td class="contentCell"></td>
             </tr>
         </tbody>
