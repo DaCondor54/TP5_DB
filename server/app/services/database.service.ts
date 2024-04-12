@@ -28,7 +28,7 @@ export class DatabaseService {
   public async createBirdSpecies(bird: BirdSpecies): Promise<pg.QueryResult> {
     const client = await this.pool.connect();
     const { scientificName, commonName, speciesStatus, scientificNameConsumed } = bird;
-    if (!scientificName)
+    if (!scientificName || !commonName)
       throw new Error("Invalid create bird species values");
     const consumed = scientificNameConsumed == '' ? null : scientificNameConsumed;
     const values: (string | null)[] = [scientificName, commonName, speciesStatus, consumed];
@@ -78,7 +78,7 @@ export class DatabaseService {
 
     if (commonName.length > 0) toUpdateValues.push(`nomcommun = '${commonName}'`);
     if (speciesStatus.length > 0) toUpdateValues.push(`statutspeces = '${speciesStatus}'`);
-    if (scientificNameConsumed !== '') 
+    if (scientificNameConsumed !== '')
       toUpdateValues.push(`nomscientifiquecomsommer = '${scientificNameConsumed}'`);
     else
       toUpdateValues.push(`nomscientifiquecomsommer = null`);
@@ -86,6 +86,8 @@ export class DatabaseService {
 
     if (
       !scientificName ||
+      !commonName ||
+      !speciesStatus ||
       toUpdateValues.length === 0
     )
       throw new Error("Invalid bird species update query");

@@ -76,8 +76,14 @@ export class BirdPageComponent {
   }
 
   public updateBird(i: number) {
-    this.communicationService.updateBird(this.birds[i]).subscribe((res: number) => {
-      this.refresh();
+    this.communicationService.updateBird(this.birds[i]).subscribe({
+      next: () => {
+        this.refresh();
+      },
+      error: (error: Error) => {
+        this.errorMessage = error.message;
+        this.showModal = true;
+      }
     });
   }
 

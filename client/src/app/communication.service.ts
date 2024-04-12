@@ -36,7 +36,9 @@ export class CommunicationService {
   public updateBird(bird: BirdSpecies): Observable<number> {
     return this.http
       .put<number>(this.BASE_URL + "/birdspecies/" + bird.scientificName, bird)
-      .pipe(catchError(this.handleError<number>("updateBird")));
+      .pipe(catchError((res) => {
+        throw new Error(res.error.message);
+      }));
   }
 
   public deleteBird(scientificName: string): Observable<number> {

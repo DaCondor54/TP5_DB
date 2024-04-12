@@ -56,7 +56,7 @@ export class DatabaseController {
           })
           .catch((e: Error) => {
             console.error(e.stack);
-            res.status(409).json({ message: scientificName === '' ? ErrorMessage.EmptyScientificName : ErrorMessage.DuplicateScientificName });
+            res.status(409).json({ message: this.getErrorMessage(bird) });
           });
       }
     );
@@ -93,9 +93,16 @@ export class DatabaseController {
           })
           .catch((e: Error) => {
             console.error(e.stack);
+            res.status(409).json({ message: ErrorMessage.EmptyCommonName });
           });
       }
     );
     return router;
+  }
+
+  private getErrorMessage(bird: BirdSpecies): string {
+    if (bird.scientificName === "") return ErrorMessage.EmptyScientificName;
+    if (bird.commonName === "") return ErrorMessage.EmptyCommonName;
+    return ErrorMessage.DuplicateScientificName;
   }
 }
